@@ -10,11 +10,28 @@ public class Util {
     private static final String USER = "root";
     private static final String PASS = "90866651";
 
-    public static Connection getConn() throws SQLException, ClassNotFoundException {
+    public static Connection getConn() {
         //Class.forName("com.mysql.jdbc.Driver");   //deprecated
-        Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        Connection conn = null;
+        try {
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
         return conn;
 
         // реализуйте настройку соеденения с БД
+    }
+
+    public static void closeConn(Connection conn) {
+        if (conn != null) {
+            try {
+                conn.close();
+                System.out.println("Connection is closed");
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+
     }
 }

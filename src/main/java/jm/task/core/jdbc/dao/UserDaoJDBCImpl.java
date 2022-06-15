@@ -22,36 +22,46 @@ public class UserDaoJDBCImpl implements UserDao {
             " age INTEGER, " +
             " PRIMARY KEY ( id ))";
 
+    public static Connection getConnection() {
+        return connection;
+    }
+
+    public static void setConnection(Connection connection) {
+        UserDaoJDBCImpl.connection = connection;
+    }
+
+    private static Connection connection = Util.getConn();
+
     public UserDaoJDBCImpl() {
 
     }
 
     public void createUsersTable() {
 
-        try (Connection connection = Util.getConn(); Statement stmt = connection.createStatement();
+        try (Statement stmt = connection.createStatement();
         ) {
             String sql = CREATE_USERS_TABLE;
             stmt.executeUpdate(sql);
             System.out.println("Created table Users in given database...");
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
     }
 
     public void dropUsersTable() {
-        try (Connection connection = Util.getConn(); Statement stmt = connection.createStatement();
+        try (Statement stmt = connection.createStatement();
         ) {
             String sql = DROP_USERS_TABLE;
             stmt.executeUpdate(sql);
             System.out.println("Table Users in given database is dropped");
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public void saveUser(String name, String lastName, byte age) {
-        try (Connection connection = Util.getConn(); PreparedStatement stmt = connection.prepareStatement(SQL_ADD_USER);
+        try (PreparedStatement stmt = connection.prepareStatement(SQL_ADD_USER);
         ) {
             stmt.setString(1, name);
             stmt.setString(2, lastName);
@@ -62,13 +72,13 @@ public class UserDaoJDBCImpl implements UserDao {
             } else {
                 System.out.println("User was not added");
             }
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public void removeUserById(long id) {
-        try (Connection connection = Util.getConn(); PreparedStatement stmt = connection.prepareStatement(REMOVE_USER_BY_ID);
+        try (PreparedStatement stmt = connection.prepareStatement(REMOVE_USER_BY_ID);
         ) {
             stmt.setInt(1, (int) id);
             int checkOperation = stmt.executeUpdate();
@@ -77,7 +87,7 @@ public class UserDaoJDBCImpl implements UserDao {
             } else {
                 System.out.println("User was not deleted");
             }
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -86,11 +96,11 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public List<User> getAllUsers() {
         List<User> list = new ArrayList<>();
-        try (Connection connection = Util.getConn(); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(FIND_ALL_USERS);) {
+        try (Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(FIND_ALL_USERS);) {
             while (resultSet.next()){
                 list.add(createUser(resultSet));
             }
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -98,12 +108,12 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
-        try (Connection connection = Util.getConn(); Statement stmt = connection.createStatement();
+        try (Statement stmt = connection.createStatement();
         ) {
             String sql = CLEAN_USERS_TABLE;
             stmt.executeUpdate(sql);
             System.out.println("Table Users is cleaned");
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
