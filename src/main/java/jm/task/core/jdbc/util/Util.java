@@ -21,7 +21,6 @@ public class Util {
     private static final String DB_DRIVER = "com.mysql.cj.jdbc.Driver";
     private static final String DIALECT = "org.hibernate.dialect.MySQL5Dialect";
 
-    private static SessionFactory sessionFactory;
 
     // =====JDBC connection config=======
     public static Connection getConn() throws SQLException, ClassNotFoundException {
@@ -33,6 +32,7 @@ public class Util {
 
     // =====Hibernate config=======
     public static SessionFactory getSessionFactory() {
+        SessionFactory sessionFactory = null;
         if (sessionFactory == null) {
             try {
                 Configuration configuration = new Configuration();
@@ -60,5 +60,7 @@ public class Util {
         }
         return sessionFactory;
     }
+
+
 
 }
